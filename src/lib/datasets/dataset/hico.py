@@ -210,6 +210,7 @@ class HICO(Dataset):
 
         offset_mask = np.zeros((self.max_rels), dtype=np.uint8)
         rel_ind = np.zeros((self.max_rels), dtype=np.int64)
+        rel_scale = self.opt.rel_scale
         for k in range(num_rels):
             hoi = hoi_anns[k]
             if isinstance(hoi['category_id'], str):
@@ -218,8 +219,10 @@ class HICO(Dataset):
             sub_ct = bbox_ct[hoi['subject_id']]
             obj_ct = bbox_ct[hoi['object_id']]
             offset_mask[k] = 1
-            rel_ct = np.array([(sub_ct[0] + obj_ct[0]) / 2,
-                               (sub_ct[1] + obj_ct[1]) / 2], dtype=np.float32)
+            # rel_ct = np.array([(sub_ct[0] + obj_ct[0]) / 2,
+            #                    (sub_ct[1] + obj_ct[1]) / 2], dtype=np.float32)
+            rel_ct = np.array([(1 - rel_scale) * sub_ct[0] + rel_scale * obj_ct[0],
+                               (1 - rel_scale) * sub_ct[1] + rel_scale * obj_ct[1]], dtype=np.float32)
             radius = gaussian_radius((math.ceil(abs(sub_ct[0] - obj_ct[0])), math.ceil(abs(sub_ct[1] - obj_ct[1]))))
             radius = max(0, int(radius))
             radius = self.opt.hm_gauss if self.opt.mse_loss else radius

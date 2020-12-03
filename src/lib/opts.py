@@ -182,6 +182,10 @@ class opts(object):
         self.parser.add_argument('--use_verb_sub', type=int, default=0
                                  , help='whether using verb categories for subject')
 
+        # custom
+        self.parser.add_argument('--rel_scale', type=float, default=0.5,
+                                help='the scale from sub_ct to obj_ct')
+
     def parse(self, args=''):
         if args == '':
             opt = self.parser.parse_args()
