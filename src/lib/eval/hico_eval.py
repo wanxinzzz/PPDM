@@ -98,8 +98,8 @@ class hico():
             prec = tp / (fp + tp)
             ap[i] = self.voc_ap(rec,prec)
             max_recall[i] = np.max(rec)
-            #print('class {} --- ap: {}   max recall: {}'.format(
-             #    self.verb_name_dict[i], ap[i-1], max_recall[i-1]))
+            print('class {} --- ap: {}   max recall: {}'.format(
+                self.verb_name_dict[i], ap[i-1], max_recall[i-1]))
         mAP = np.mean(ap[:])
         mAP_rare = np.mean(ap[self.r_inds])
         mAP_nonrare = np.mean(ap[self.c_inds])
