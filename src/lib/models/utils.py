@@ -11,7 +11,9 @@ def _sigmoid(x):
 
 def _gather_feat(feat, ind, mask=None):
     dim  = feat.size(2)
+    # ind (N, 64) -> (N, 64, C)
     ind  = ind.unsqueeze(2).expand(ind.size(0), ind.size(1), dim)
+    # feat (N, HxW, C) -> (N, 64, C)
     feat = feat.gather(1, ind)
     if mask is not None:
         mask = mask.unsqueeze(2).expand_as(feat)
@@ -20,7 +22,6 @@ def _gather_feat(feat, ind, mask=None):
     return feat
 
 def _tranpose_and_gather_feat(feat, ind):
-    # ind (N, 64) -> (N, 64, C)
     # feat (N, C, H, W) -> (N, HxW, C) -> (N, 64, C)
     feat = feat.permute(0, 2, 3, 1).contiguous()
     feat = feat.view(feat.size(0), -1, feat.size(3))

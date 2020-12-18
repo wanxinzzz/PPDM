@@ -147,6 +147,18 @@ class RegL1Loss(nn.Module):
     loss = F.l1_loss(pred * mask, target * mask, size_average=False)
     loss = loss / (mask.sum() + 1e-4)
     return loss
+  
+
+class BCELoss(nn.Module):
+  def __init__(self):
+    super(BCELoss, self).__init__()
+  
+  def forward(self, output, mask, target):
+    mask = mask.unsqueeze(2).expand_as(output).float()
+    loss = F.binary_cross_entropy(output * mask, target * mask, size_average=False)
+    loss = loss / (mask.sum() + 1e-4)
+    return loss
+
 
 class NormRegL1Loss(nn.Module):
   def __init__(self):

@@ -11,6 +11,7 @@ from .networks.pose_dla_dcn_glob import get_pose_net_glob
 from .networks.pose_dla_dcn_3level import get_pose_net_3level
 from .networks.pose_dla_dcn_glob_3level import get_pose_net_glob_3level
 from .networks.resnet_dcn import get_pose_net as get_pose_net_dcn
+from .networks.relation_net import RelationNet
 
 _model_factory = {
   'dla': get_dla_dcn,
@@ -21,11 +22,13 @@ _model_factory = {
   'resdcn': get_pose_net_dcn
 }
 
-def create_model(arch, heads, head_conv):
+def create_model(arch, heads, head_conv, opt):
   num_layers = int(arch[arch.find('_') + 1:]) if '_' in arch else 0
   arch = arch[:arch.find('_')] if '_' in arch else arch
   get_model = _model_factory[arch]
   model = get_model(num_layers=num_layers, heads=heads, head_conv=head_conv)
+  if heads.get('embedding', None) is not None:
+    model = RelationNet(model, opt)
   return model
 
 def load_model(model, model_path, optimizer=None, resume=False, 

@@ -177,14 +177,23 @@ class opts(object):
                                  help='training dataset path.')
         self.parser.add_argument('--root_path', type=str, default='../Dataset',
                                  help='training dataset path.')
-        self.parser.add_argument('--use_cos', type=int, default=0
-                                 , help='whether using cosine lr step policy')
-        self.parser.add_argument('--use_verb_sub', type=int, default=0
-                                 , help='whether using verb categories for subject')
+        self.parser.add_argument('--use_cos', type=int, default=0,
+                                 help='whether using cosine lr step policy')
+        self.parser.add_argument('--use_verb_sub', type=int, default=0,
+                                 help='whether using verb categories for subject')
 
         # custom
-        self.parser.add_argument('--rel_scale', type=float, default=0.5,
-                                help='the scale from sub_ct to obj_ct')
+        self.parser.add_argument('--rel_scale', type=float, default=0.1,
+                                 help='the scale from sub_ct to obj_ct')
+        self.parser.add_argument('--embedding_dims', type=int, default=256,
+                                 help='the number of embedding dimensions')
+        self.parser.add_argument('--hidden_dims', type=int, default=512,
+                                 help='the number of hidden dimensions')
+        self.parser.add_argument('--combined_way', type=str, default='cat',
+                                 help='the way to combine sub and obj features, cat | dot | add')
+        self.parser.add_argument('--rel_weight', type=float, default=0.5,
+                                 help='loss weight for relation net.')
+        
 
     def parse(self, args=''):
         if args == '':
@@ -263,6 +272,13 @@ class opts(object):
                          'hm_rel': opt.num_classes_verb,
                          'sub_offset': 2,
                          'obj_offset': 2}
+            if opt.reg_offset:
+                opt.heads.update({'reg': 2})
+        elif opt.task == 'embedding':
+            assert opt.dataset in ['hico', 'vcoco', 'hoia', 'hicoembd']
+            opt.heads = {'hm': opt.num_classes,
+                         'wh': 2 if not opt.cat_spec_wh else 2 * opt.num_classes,
+                         'embedding': opt.embedding_dims}
             if opt.reg_offset:
                 opt.heads.update({'reg': 2})
         else:

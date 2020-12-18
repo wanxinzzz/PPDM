@@ -16,15 +16,18 @@ def _nms(heat, kernel=3):
 
 def _topk(scores, K=40):
     batch, cat, height, width = scores.size()
-      
+    
+    # topk_scores, topk_inds : (batch, cat, K), index in one cat
     topk_scores, topk_inds = torch.topk(scores.view(batch, cat, -1), K)
 
     topk_inds = topk_inds % (height * width)
     topk_ys   = (topk_inds // width).int().float()
     topk_xs   = (topk_inds % width).int().float()
-      
+    
+    # topk_score, topk_ind : (batch, K)
     topk_score, topk_ind = torch.topk(topk_scores.view(batch, -1), K)
     topk_clses = (topk_ind // K).int()
+    # topk_inds : (batch, K), index in one image
     topk_inds = _gather_feat(
         topk_inds.view(batch, -1, 1), topk_ind).view(batch, K)
     topk_ys = _gather_feat(topk_ys.view(batch, -1, 1), topk_ind).view(batch, K)
