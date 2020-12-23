@@ -185,9 +185,9 @@ class opts(object):
         # custom
         self.parser.add_argument('--rel_scale', type=float, default=0.1,
                                  help='the scale from sub_ct to obj_ct')
-        self.parser.add_argument('--embedding_dims', type=int, default=256,
+        self.parser.add_argument('--embedding_dims', type=int, default=128,
                                  help='the number of embedding dimensions')
-        self.parser.add_argument('--hidden_dims', type=int, default=512,
+        self.parser.add_argument('--hidden_dims', type=int, default=128,
                                  help='the number of hidden dimensions')
         self.parser.add_argument('--combined_way', type=str, default='cat',
                                  help='the way to combine sub and obj features, cat | dot | add')

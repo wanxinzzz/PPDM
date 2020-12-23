@@ -21,7 +21,7 @@ class BaseDetector(object):
       opt.device = torch.device('cpu')
     
     print('Creating model...')
-    self.model = create_model(opt.arch, opt.heads, opt.head_conv)
+    self.model = create_model(opt.arch, opt.heads, opt.head_conv, opt)
     self.model = load_model(self.model, opt.load_model)
     self.model = self.model.to(opt.device)
     self.model.eval()
@@ -105,7 +105,7 @@ class BaseDetector(object):
       pre_process_time = time.time()
       pre_time += pre_process_time - scale_start_time
       
-      output, dets_obj, dets_sub, rel, forward_time, img_w, img_h= self.process(images, return_time=True)
+      output, dets_obj, dets_sub, rel, forward_time, img_w, img_h = self.process(images, return_time=True)
 
       torch.cuda.synchronize()
       net_time += forward_time - pre_process_time
@@ -128,4 +128,5 @@ class BaseDetector(object):
     
     return {'results_rel': rel_output, 'tot': tot_time, 'load': load_time,
             'pre': pre_time, 'net': net_time, 'dec': dec_time,
-            'post': post_time, 'merge': merge_time}
+            'post': post_time, 'merge': merge_time,
+            'dets_sub': dets_sub, 'dets_obj': dets_obj}

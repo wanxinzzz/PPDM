@@ -65,6 +65,7 @@ def hoidet_decode( heat_obj, wh, heat_rel, offset_sub, offset_obj, reg=None, cor
     offset_sub = offset_sub.view(batch, K_rel, 2)
     dist_sub_xs = xs_rel.view(batch, K_rel, 1) - offset_sub[:, :, 0:1]
     dist_sub_ys = ys_rel.view(batch, K_rel, 1) - offset_sub[:, :, 1:2]
+    # L1 distance (K_rel, K_bbox), match to topk sub
     match_sub_xs = match_rel_box(dist_sub_xs, xs_human.view(batch, K_human, 1), K_rel, K_human)
     match_sub_ys = match_rel_box(dist_sub_ys, ys_human.view(batch, K_human, 1), K_rel, K_human)
 
